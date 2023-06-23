@@ -4,11 +4,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import { onAuthStateChanged, auth } from './firebase';
-import { useDispatch } from 'react-redux';
-import { logout, login } from './features/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout, login, selectUser } from './features/userSlice';
+import ProfileScreen from './screens/ProfileScreen';
 
 function App() {
-  const user = null;
+  const user = useSelector(selectUser);
   const dispatch = useDispatch();
   useEffect(() => {
     const ubsubscribe = onAuthStateChanged(auth, (user) => {
@@ -17,13 +18,13 @@ function App() {
         dispatch(
           login({
             uid: user.uid,
-            emial: user.email,
+            email: user.email,
           })
         );
         console.log(user);
       } else {
         //Not Logged In
-        dispatch(logout);
+        dispatch(logout());
       }
     });
 
@@ -38,7 +39,7 @@ function App() {
         ) : (
           <Routes>
             <Route path="/" element={<HomeScreen />} />
-            <Route path="/books" element={<h1>hello</h1>} />
+            <Route path="/profile" element={<ProfileScreen />} />
           </Routes>
         )}
       </Router>
